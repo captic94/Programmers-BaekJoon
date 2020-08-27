@@ -16,11 +16,10 @@ n은 1,000,000 이하의 자연수 입니다.
 #include <vector>
 
 using namespace std;
-
 int binary(int num)
 {
 	int sum = 0;
-
+	// 인자로 들어오는 숫자의 2진수의 각자리를 더한다 -> 2진수로 변환했을 때 1의 갯수
 	for (num; num > 0; num /= 2)
 		sum += (num % 2);
 
@@ -28,21 +27,16 @@ int binary(int num)
 }
 
 int solution(int n) {
-	int answer = n + 1;
+	int answer = n;
 	int sum = 0;
-	vector<int> bianry;
-
+	// n의 2진수로 변환했을 때 1의 갯수
 	sum = binary(n);
-
-	int bi = bianry(answer);
-	for (bi; bi != sum; answer++)
-		bi = bianry(answer);
-
+	int bi = 0;
+	// n 보다 크지만 2진수 일때 n과 같은 수의 1을 가진 수 찾기
 	do
 	{
-		anwer++;
-		bi = 
-
+		answer++;
+		bi = binary(answer);
 	} while (bi != sum);
 
 
