@@ -1,0 +1,91 @@
+스크립팅 요소 문법
+- 스크립팅 요소 3가지
+  1) 스크립틀릿(scriptlet)
+  2) 익스프레션(expression)
+  3) 선언부(declaration)
+
+
+1) 스크립틀릿 ( <% %>)
+-> jsp가 java를 사용하기 위해서 사용
+예)
+<script>
+	var a = 10;
+	alert(a);
+	<%
+		int sum = 0;
+		for(int i = 0; i < 10; i++ ){
+		 //System.out.println()
+		sum += i;
+		}
+	%>
+
+	a = <%=sum%>;
+</script>
+
+2) 익스프레션(expression) (<%= %>)
+-> 자바 식()을 사용하기 위해서 사용
+
+3) 선언부(declaration) (<%! %>)
+-> 변수 선언문이나 메서드 선언문을 사용
+
+
+
+지시자(directive)
+- 웹 컨테이너가 JSP 페이지를 서블릿 클래스로 변환할 때 필요한 정보들을 기술하는 역할
+- 모든 지시자는 <%@  %> 사용
+
+ 1) page 지시자
+   - JSP 페이지 전체에 적용되는 정보를 기술하기 위해 사용
+ 2) include 지시자
+
+ 3) taglib 지시자
+
+
+
+JSP 페이지의 내장 변수(implicit variable)
+- JSP 페이지 안에 선언을 하지 않고도 사용할 수 있는 변수
+
+
+
+Expression Language (EL) -> JSTL
+- 익스프레션 언어란 식(expression)을 중심으로 코드를 기술하는 언어
+- EL표현식
+  ${맵.	}
+  ${javaBeans.	}
+   -> java beans 조건 : public class, public 매개변수 없는 생성자
+		     프로퍼티용 필드는 public이면 안된다
+		     프로퍼티용 메서드는 public get/set
+
+${attribute의 key}
+page(현재 JSP 객체) -> request -> session -> application(servletContext) 순으로 검색
+
+만약 각각의 객체에 동일한 attr key가 있다면 스코프를 지정해서 검색 가능
+예) ${pageScope.RESULT}
+
+
+
+
+${param.id}			<%=request.getParameter("id")%>
+${paramValues.c}			<%=request.getParameterValues("c")%>
+
+contextPath를 구하고 싶다?     ->	<%=request.getContextPath()%> 예) /back25
+이걸 EL로 표현하면
+${pageContext.request.contextPath}	<%=pageContext.getRequest().getContextPath()%>
+
+
+JSTL (JSP STandard Library)
+maven에서 jstl 검색 후 jar파일 다운, 프로젝트 - WebContent - WEB-INF - lib에 추가
+jstl.jar 내부에 있는 META-INF에 tld 파일들이 있다
+-> 여기에 기술? 설정? 되어있는 태그들을 사용할 수 있다
+=> taglib 지시자(<%@ taglib ~%>)를 이용하여 접근해야만 한다
+
+- JSTL을 가지고 할 수 있는 일
+ 간단한 프로그램 로직의 구사(자바의 변수 선언, if 문, for 문 등에 해당하는 로직)
+
+ 날짜, 시간, 숫자의 포맷
+ JSP 페이지 하나를 가지고 여러 가지 언어의 웹 페이지 생성
+ 문자열을 처리하는 함수 호출
+ 
+ (다른 JSP 페이지 호출(<c:redirect>, <c:import>)
+ 데이터베이스로의 입력, 수정, 삭제, 조회
+ XML 문서의 처리)		-> 이 기능들은 사용하지 않을 예정 : MVC 모델에 충실하여 JSP는 칸트롤러 역할만

@@ -1,0 +1,151 @@
+스프링은 자바 전역에서 사용할 수 있는 프레임워크
+웹프로젝트, java standard 프로젝트 등 다 적용 가능하다
+
+- java configuration : 필드의 set/get method 자동 생성해주는 거...?
+
+의존성 주입(Dependency Injection)
+- UML에서 dependency를 먼저 배웠었다 : 클래스와 클래스의 연관/집합(has-a)/의존관계
+- spring에서는 클래스와 인터페이스와 같은 관계에 의존관계를 주입시켜주는 것이 기본?
+
+이전 프로퍼티 파일에 사용할 dao를 적어두고 상황에 맞게 읽고 클래스 찾고 객체를 생성했었다
+그러나 spring을 사용하면 xml을 설정만 해주면 알아서 dao 객체를 이용할 수 있다
+
+
+
+- mvc 패턴을 지켜서 web프로젝트를 생성해야 한다
+ -> @Controller가 최종 목표이지만 구조를 파악하기 위해서 xml설정을 먼저 해볼 예정
+
+
+AOP (Aspect Oriented Program 관점지향프로그램) -  트랜잭션 처리
+공통사항을 기존의 수직적(부모-자식 관계)가 아닌 수평적 관계를 중심으로 묶는 것
+예) 위빙 - 핵심 내용을 위, 아래로 둘러 싸고 있는 공통 내용을 묶어서 처리?
+
+web security library
+
+
+
+Java 컨퍼런스 = Java Bean
+
+스프링 컨피큐레이션 빈에서의 빈 = 스프링에 의해서 관리되는 빈
+configuration bean 파일에 <bean>태그를 사용하면 생성자를 사용하지 않고도 객체 생성이 가능하다
+src 폴더 안에 spring bean configuration file을 configuration.xml로 선언하고
+<beans>태그 내부에
+<bean id="p" class="com.my.vo.Product"></bean> 을 추가해준다
+
+
+이후 java파일 main에서
+
+// 스프링 컨테이너를 구동
+ClassPathXmlApplicationContext ctx;
+String configLocation = "configuration.xml";
+// Product 객체 생성 확인
+ctx = new ClassPathXmlApplicationContext(configLocation);
+
+// configuration.xml에 선언한 bean을 활용하여 생성된 객체 접근하기
+ctx.getBean("p");
+Product p1 = ctx.getBean("p", com.my.vo.Product.class);
+
+
+- set메서드 호출하기
+*configuration.xml
+...
+<bean id="p" class="com.my.vo.Product">
+	<property name="prod_no" value="C0001"></property>		// 얘는 setter
+</bean>
+...
+
+또는
+<bean id="p" class="com.my.vo.Product">
+	<constructor-arg index="0" value="C0001"/>			// 얘는 생성자
+	<constructor-arg index="1" value="테스트"/>
+	<constructor-arg index="2" value="1000"/>
+</bean>
+
+
+
+- 객체간 has-a 관계(객체 내부의 객체)를 spring configuration bean으로 표현하기
+<bean id="line" class="com.my.vo.OrderLine">
+	<property name="order_no" value="1"/>
+	<property name="order_p" ref="p"/>		// -> ref에 이전에 선언했던 product의 bean태그 id를 넣는다
+	<property name="order_quantity" value="5"/>
+</bean>
+
+
+- 객체 프로퍼티에 null 값 주기
+<bean id="info" class="com.my.vo.OrderInfo">
+	<constructor-arg name="order_c" ref="c"/>
+	<property name="order_dt">
+		<null/>
+	</property>
+</bean>
+
+- list, map형 멤버변수 set하기
+ --list
+<bean id="info" class="com.my.vo.OrderInfo">
+	<property name="lines">
+		<list>
+			<ref bean="line"/>
+			<ref bean="line2"/>
+		</list>
+	</property>
+</bean>
+
+--map
+<bean id="m" class="com.my.vo.MapVO">
+	<property name="map">
+		<map>
+			<entry key="one" value="1"/>
+			<entry key="two" value="2"/>
+			<entry key="three" value="3"/>
+		</map>
+	</property>
+</bean>
+
+
+
+- 프로퍼티형 필드 set하기
+<bean id="prop" class="com.my.vo.PropertiesVO">
+	<constructor-arg>
+		<props>
+			<prop key="controller">controller.properties</prop>
+			<prop key="dao">dao.properties</prop>
+			<prop key="msg">msg.properties</prop>
+		</props>
+	</constructor-arg>
+</bean>
+
+
+
+
+
+
+
+Spring 용어 정리1
+- 제어의 역전 - IoC (Inversion of Control) :
+ 특정 작업을 수행하기 위해 필요한 다른 컴포턴트들을 직접 생성하거나 획득하기 보다는
+ 이러한 의전성들을 외부에 정의하고 컨테이너에 의해 공급받는 방식으로 동작
+
+
+- DI : IoC의 부분 영역, 필요한 
+예) 내가 사용할 DAO를 내가 결정
+
+
+- (spring) bean : 스프링이 IoC 또는 DI 방식으로 관리하는 오브젝트
+- bean factory(= spring container) : 빈을 등록, 생성, 조회, 반환등 빈을 관리하는 기능
+- application context = bean factory + 추가기능(AOP, 메세지 지원 등)
+   -> ClassPathXml(자바클래스), AnnotationConfig(annotation)
+
+
+※ spring container 구동방법
+ 1. bean factory
+
+
+
+
+
+component 계열 annotation
+1. component		: vo
+2. Repository(value="")	: dao
+3. Service		: service
+4. Autowired		: Spring container에 의해 관리되고 있는 클레스가 있다면 연결
+			 -> component + scope(value="prototype") 이라면 새로 객체 생성 후 연결 

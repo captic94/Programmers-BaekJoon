@@ -1,0 +1,95 @@
+▣ Spring MVC 구성 주요 컴포넌트
+1. DispatcherServlet - Front Controller
+2. HandlerMapping - 클라이언트의 요청을 처리할 Controller를 찾는 작업처리
+3. Controller - 클라이언트 요청 처리를 수행하는 Controller
+4. View - 응답하는 로직을 처리
+5. ViewResolver - 응답할 View를 찾는 작업을 처리
+6. ModelAndView - 응답할 View와 View에게 전달할 값을 저장하는 용도의 객체
+
+
+▣ 스프링MVC 요청 처리순서
+요청URL -> URL을 분석하여 담당 콘트롤러 인스턴스생성 -> 뷰
+1) 서블릿이 처리해야할 요청 URL이 발생하면 DispatcherServlet에 전달
+2) DispatcherServlet은 HandlerMapping을 사용하여 요청을 처리한 Controller빈을 구한다.
+3) DispatcherServlet은 Controller객체의 handlerRequest()를 호출하여 요청을 처리한다.
+4) handlerRequest()는 처리결과를 담은 ModelAndView객체를 리턴한다.
+5) DispatcherServlet은 ViewResolver로부터 뷰객체를 구한다.
+6) 뷰객체가  응답생성한다.
+
+
+
+▣ json형식으로 요청 보내기
+ - ajax로 요청 보낼 때 contentType을 'application/json; charset=utf-8'로 설정
+예)
+$.ajax({
+	url:"f.do"
+	,method:"post"
+	,data : '[{"prod_no" : "C0001", "prod_name" : "아메리카노", "prod_price" : 1500},'
+		+ '{"prod_no" : "C0002", "prod_name" : "아이스 아메리카노", "prod_price" : 1000}]'
+	,contentType: 'application/json; charset=utf-8'
+	,success:function(data){
+		alert(data);
+	}
+});
+
+---------Controller------------
+
+- 파라미터에 @RequestBody를 붙여준다
+※ @RequestBody와 @ResponseBody
+  @RequestBody  
+   - HTTP 요청 몸체를 자바 객체로 전달받음
+   - HTTP 요청의 body 내용을 자바 객체로 매핑하는 역할
+
+  @ResponseBody 
+   - 자바 객체를 HTTP 응답 몸체로 전송함
+   - 자바 객체를 HTTP 요청의 body 내용으로 매핑하는 역할
+
+
+
+출처: https://lee-mandu.tistory.com/242 [개발/일상_Mr.lee]
+
+@PostMapping("/f.do")
+	public void f(@RequestBody String data) {
+		System.out.println("f() 호출되었다");
+		System.out.println(data);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			List<Product> list = mapper.readValue(data, new TypeReference<List<Product>>(){ });
+			
+			for (Product p : list)
+				System.out.println(p);
+			
+		}catch(JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+▣ ModelAndView 객체
+- 뷰 정보 및 모델 정보를 담고 있는 객체
+- 이 객체에 addObject(attributename, attributeObject) 를 사용하여 모델쪽에서 뷰 쪽으로 데이터를 전달해 줄 수 있다
+ -> attribute에 set하는 것과 동일한 효과
+- 뷰 정보를 setViewName("뷰 이름") 으로 설정할 수 있다
+ -> 이러면 view resolver의 도움을 받지 않는다
+
+
+▣ View Resolver 만들기
+- mvc-servlet.xml > beans > add bean
+    id = viewResolver, class = org.springframework.web.servlet.view.InternalResourceViewResolver
+    > add property
+       name = suffix, value = .jsp
+- viewresolver의 도움으로 Controller에서 url 값에 .jsp를 제거해도 된다
+
+
+▣ Resolver / View를 거치지 않고 바로 응답하기????
+- method에 @ResponseBody Annotaion을 추가한다
+- class의 @Controller Annotation 대신 @RestController를 추가한다 ( 대신 view resolver 사용 안하는 거다)
+
+
+
+mvc-servlet.xml은 front/view단 쪽 설정
+-> hikariCP(Connection Pool), mybatis 등과 같은 db설정은 다른 configuration파일을 하나 더 만들어주고
+    기존 mvc-servlet보다 먼저 읽히게 해줘야 한다
+∴ ServletContext 객체의 생성 소멸을 감시하는 Listener에서 설정해준다
+  (근데 이름이 정해져 있대 , applicationContext.xml)

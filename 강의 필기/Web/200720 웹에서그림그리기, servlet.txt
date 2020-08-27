@@ -1,0 +1,20 @@
+웹기술
+실행되는 위치에따라
+<ClientSide>
+1. HTML
+2. CSS
+3. JS - Bootstrap
+
+<ServerSide>
+	기반언어		웹서버
+1. ASP	VB(Visual Basic?)	IIS 					[ASP 실행용 DDL 포함]
+2. PHP	Perl, C 기반	Apache					[PHP 실행용 모듈 포함]
+3. JSP	JAVA		Tomcat, 레진, WebLogic/WebSphere/Zeus	[JSP 실행용 엔진 포함]
+
+서버쪽에서 JSP에서 먼저 응답이 되고 -> 그 후에 JS에서 작업이 이루어 지는 것
+
+
+웹서버연동
+[정적문서용] : HTML, CSS, JS, 이미지 등...	[JSP실행엔진용]
+   IIS			+		Tomcat
+   Apache		+		Tomcat

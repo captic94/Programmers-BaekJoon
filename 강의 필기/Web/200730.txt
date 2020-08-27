@@ -1,0 +1,4 @@
+URL : http://192.168.0.115/back25/boad/list(전체경로) 
+URI : /back25/boad/list
+ServletPath : /board
+PathInfo : /list

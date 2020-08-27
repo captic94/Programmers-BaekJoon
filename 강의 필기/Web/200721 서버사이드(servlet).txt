@@ -1,0 +1,25 @@
+*엔진 ≒ 컨테이너
+
+
+ant build - 저장만 하면 자동으로 컴파일 해준다 
+	이 기술을 사용해서 특정 디렉토리만 톰캣서버나 다른 서버 프로그램?에 보낼 수 있다??
+
+ant build로 톰캣 안으로 복사된 .class파일들은 WEB-INF 폴더 안에 있는데 얘는 URL로 접근할 수 없다
+-> 그 안에 있는 클래스 파일에 접근하기 위해서는 web.xml의 도움을 받아야 한다
+
+web.xml에 servlet 태그와 servlet-mapping을 이용해서 해당 클래스에 접근한다
+-> servlet-mapping의 url-pattern태그안 내용으로 url으로 접근을 하면
+    servlet-mapping의 servlet-name 태그의 내용과 동일한 이름을 갖는 servelt태그의 servlet-name을 찾아서
+    그 servlet의 servlet-class태그의 내용의 클래스로 접근
+
+
+
+요청(request) 파헤치기
+http://192.168.0.115/back25/request 로 접근했다면
+
+접근 방식 : GET				- request.getMethod()로 접근
+요청 URL : http://192.168.0.115/back25/request	- request.getRequestURL()
+요청 URI  : /back25/request			- request.getRequestURI()
+서버 이름 : 192.168.0.115(혹은 localhost)	- request.serverName()
+서버 path : /request			- request.getServletPath()
+컨텍스트 path : /back25			- request.getContextPath()

@@ -1,0 +1,38 @@
+WebBrowser의 구조를 알아야 WebBrowser와 WebServer의 관계를 알 수 있다
+-> WebBrowser Architecture		(예- https://www.browserstack.com/guide/browser-rendering-engine)
+
+
+Rendering Engine (= 브라우저 엔진, 컨텐츠의 내용을 화면에 보여주는 역할)	-> HTML과 CSS를 해석, 중간에 JS문법을 만나면 JS Interpreter로 보낸다
+
+
+JavaScript Interpreter -> JS를 해석해준다
+
+
+=> 브라우저(렌더링) 엔진은 브라우저 마다 다르다	∴ 웹 표준화를 지켜라! - 최대한 지켜주는게 국롤이다
+
+
+Tomcat server에 요청 - http://localhost:80/first.html or localhost/first.html
+		      http://192.168.0.140:80/first.html
+
+
+
+
+semetic tag - 의미만 남은 태그
+
+SGML 컨텐트를 표현, 컨텐트의 구조화
+	HTML	: 컨텐트를 표현
+	XML	: 컨텐트의 구조화
+
+WorldWideWeb ->WEB -> WWW -> W3C
+웹표준화단체 : W3C
+
+HTML의 발전과정
+HTML1 -> 2 -> 3 -> 4 -> XHTML1 -> XHTML2
+
+WEB2.0 : WEB BROWSER의 PLATFORM화
+	WB에서 제공되는 다양한 API
+	-> 표준화된 API 제시
+	-> W3C가 승인
+	==> HTML5 - 다양한 API + 시멘틱태그(구조화된 태그)
+
+querystring - url뒷부분에 / "name=value"

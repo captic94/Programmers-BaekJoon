@@ -1,0 +1,82 @@
+Maven Repasitory에서 Lombok 가져와 pom.xml <dependencies> 태그 하위에 추가
+-> Library에 추가
+
+Lombok으로 추가로 사용가능한 Annotation
+1. @NoArgsConstructor : 매개변수 없는 생성자
+2. @AllArgsConstructor : 모든 필드를 매개변수로 하는 메서드
+3. @Setter : 모든 필드의 set 메서드
+4. @Getter : 모든 필드의 get 메서드
+
+5. @NonNull : @RequiredArgsConstructor를 위해 설정
+6. @RequiredArgsConstructor : NonNull Annotation이 있는 필드를 매개변수로 갖는 생성자를 만든다
+
+7. @ToString : ToString 메서드 만들어 준다
+8. @EqualsAndHashCode : equals와 hashcode 메서드를 오버라이드 한다
+  - of = {"필드명"} : equals에서 비교하는 필드를 of로 지정해줄 수 있다
+  예) @EqualsAndHashCode(of = {"id"})  -> id값이 같으면 true 반환
+
+
+
+JUnit - 자바 단위 테스트 : 프로젝트에서 new > JUnit Test Case로 생성
+
+클래스 내에 @Test Annotation이 붙은 메소드가 있어야 한다
+-> 그 클래스 내부에 단위 테스트 내용을 넣고 테스트를 진행한다
+
+테스트
+단정 : assert
+가정 : assuming
+
+1. assertEquals(예상값, 실행값) : 예상값과 실행값의 내용이 같은지 비교한다(서순 주의)
+2. assertNotNull(대상) : 대상이 null이 아닌지 확인
+3. assertTrue/False(논리연산) : 연산 값이 참/거짓인지 비교
+
+테스트 실패가 나오면 그 밑에 있는 테스트는 진행하지 않는다
+-> assertAll( ~~ ); 을 이용하여 실패여부 상관 없이 내부 콜백함수? 형식으로 선언된 테스트를 진행한다
+						(람다 표현식)
+예)
+assertAll(
+	()->assertNotNull(c1.getName()),
+	()->assertNotNull(c1.getAddr())
+);
+
+
+ ▣ JUnit 라이프 사이클
+@BeforeAll
+- static으로 해놔야 실행에 에러가 안 난다 (컴파일시에는 에러 X)
+- 모든 테스트 메서드 이전에 1회 호출
+
+@BeforeEach
+- 각 테스트 메스드 직전에 호출
+
+@AfterEach
+- 각 테스트 메스드 종료 직후에 호출
+
+@AfterAll
+- static으로 해놔야 실행에 에러가 안 난다 (컴파일시에는 에러 X)
+- 모든 테스트 메서드 종료 후에 1회 호출
+
+
+
+
+스프링 단위 테스트 하기 (JUnit과의 차이는?)
+spring 버전과 동일한 Spring TestContext Framework를 maven repository에서 다운
+
+스프링 컨테이너 테스트
+1. @RunWith : 스프링 컨테이너 테스트를 진행할 클래스 지정
+ JUnit4 버전 : RunWith(SpringJUnit4ClassRunner.class)
+       5 버전 : ExtendWith(SpringExtension.class)
+2. @ContextConfiguration :
+	@ContextConfiguration(locations = "classpath:xml파일명.xml")
+혹은	@ContextConfiguration(locations = "xml파일 경로")
+
+
+스프링 컨테이너에서 관리하는 객체들을 JUnit Test 클래스 내에서 @AutoWired로 연결시킨다
+예) <bean id="c" class="com.my.vo.Customer"> 를
+
+      @AutoWired
+      Customer c;
+
+
+
+▣ spring에서 mybatis 사용하기
+maven repository에서 mybatis와 mybatis-spring용 maven<dependcy>태그? 가져와서 pom.xml에 추가

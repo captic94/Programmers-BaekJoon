@@ -1,0 +1,31 @@
+tomcat서버를 통해 베포된 프로젝트를 웹어플리케이션 = 웹모듈 = 웹컨텍스트라 부른다
+  예) 우리가 만든 front 프로젝트
+
+
+form태그 - 사용자로 부터 입력 받은 데이터를 서버로 보내기 위해 사용하는 태그
+
+
+http 요청과 응답
+get : message body 사용 안 한다 / 전송할 데이터가 URL뒤에 따라 붙는다 - 예) http://localhost/?t=10 과 같이 url 뒤에 querystring이 붙는다
+post: message body 사용 -> querystring 사용 안 한다
+
+-> 비밀번호와 같은 개인정보 보낼 때는 post 사용하는게 맞다
+
+
+화면에는 안보이지만, 서버로 보내줘야하는 내용이 있다? --> Hidden 사용
+
+
+
+□ CSS Selector
+- https://www.w3schools.com/cssref/css_selectors.asp 참고
+
+
+블럭요소
+- 자동 줄 바꿈 된다
+- 크기 지정이 가능하다
+예) h1~h6, p(패러그래프), hr(수평선?), div, table, tr(태이블의 행)
+
+인라인요소
+- 자동 줄 바꿈 안된다 (자기 혼자 한 줄을 차지할 필요가 없다?)
+- 알아서(컨텐트에 따라서) 크기가 결정된다
+예) span, mark, i(이텔릭체)

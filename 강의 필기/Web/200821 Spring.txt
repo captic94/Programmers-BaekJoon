@@ -1,0 +1,69 @@
+EJB(Enterprise Java Bean) 엔진
+- 기업형 분산 컴포넌트 개발 기술
+ -> 한 회사에서 만든 컴포넌트를 다른 회사에서도 사용할 수 있게 분산하는 것
+- 웹로직, 웹스피어, 제우스에 탑재된 엔진,  고가이다, 실행시 많은 시간이 소요된다(무겁다)
+
+(자바 빈 = 컴포넌트)
+
+
+Spring은 상대적으로 경량 컴포넌트 but 분산 컴포넌트는 아니다?(분산 못해)
+ - 규격화되지 않았다 (POJO - plain old java object를 추구)
+JPA -  db랑 일하는 애
+메세지빈 역할 (메세지 보내는 거) 없다
+
+
+
+
+
+spring container = bean factory
+이때 bean은 spring container에 의해 관리되는 (spring?)객체이다 -> 싱글톤 패턴으로 관리된다
+							(but! id가 다르면 다른 객체로 구분)
+
+-> spring container를 구동시키는 법
+ 1. xml : <bean>태그 - 너무 많아진다면 -> bean용 클래스에 @Component @Repository @Service + 주입용 : @autowired
+					(xml에 <componet-scan base-package="">를 추가해야 가능)
+ 2. 클래스(AnnotationConfigApplicationContext) : @configuration, @Bean
+
+※ AnnotationConfigApplicationContext는 해당 클래스 파일에
+  ClassPathXmlApplicationContext에서의 @은 사용되는 객체의 선언부에
+    (예- ProductService.java에 private으로 선언된 멤버변수에)
+
+
+
+@Component	-> VO, DTO
+@Servie		-> Service
+@Repository	-> DAO (DB와 연결)
+
+configuration.xml에 추가한 dataSource 빈은 id와 동일한 dataSource를 객체를 찾아가는 것이 아니라
+데이터 타입으로 찾아간다
+
+
+
+
+
+- 동일한 interface를 구현한 클래스 2개를 container에 올려두고 별다른 조치를 취하지 않은 채
+  interface 타입의 객체를 호출하면 에러가 발생한다  (@Autowired 때문에 발생하는 문제 - 자료형을 기준으로 가져오기 때문)
+
+해결법 : @Qualifer(value = "")를 통해 구분 -> @Autowired 밑에 추가
+
+
+
+
+
+spring container에서 싱글톤으로 관리하는 객체를 getBean() 메서드를 호출할 때 마다 새로운 객체를 만들어주는 방법
+1. <bean>태그 내 속성으로 scope="prototype"을 추가
+2. @Component 밑에 @Scope(value="prototype")을 추가
+
+
+getBean()메서드로 prototype객체가 생성될 때 마다 메서드가 호출되었으면 좋겠다(init메서드 마냥!)
+1. <bean>태그 내 속성으로 init-method="메서드명"
+2. 호출되길 원하는 메서드 위에 @PostConstruct
+
+
+
+
+라이브러리 < 프레임워크 (사이즈)
+프레임워크 내에 여러 모듈들의 모임
+라이브러리는 모듈에 들어가는 클래스들의 모임
+라이브러리는 개발자(사용자)가 중심 -> 개발자가 원하는 라이브러리를 선택해서 사용
+프레임워크는 프레임워크가 중심 -> 개발자가 프레임워크가 정해둔 절차대로 진행

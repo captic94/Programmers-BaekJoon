@@ -1,0 +1,25 @@
+쿠키와 세션
+쿠키
+- 웹 서버가 웹 브라우저로 데이터를 보냈다가 웹 서버 쪽으로 다시 되돌려 받는 방법을 사용
+
+// Cookie c = new Cookie("이름", "값");
+Cookie c = new Cookie("loginInfo", "id1");
+c.setMaxAge(60);		-> 클라이언트에서 사용할 수 있는 최대 시간 설정 가능
+response.addCookie(c);
+
+-------------------------------------------------
+Cookie[] cArr = request.getCookies();
+for (Cookie c: cArr){
+	String v = c.getName();
+	if(v.equals("이름"){
+		sout("이전에 요청했던 클라이언트");
+		return;
+	}
+}
+sout("로그인 안 했던");
+
+
+
+
+세션
+- 웹 브라우저를 거치지 않고 웹 서버에 있는 데이터 영역을 통해 데이터를 전달하는 방법

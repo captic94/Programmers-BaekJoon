@@ -1,0 +1,45 @@
+정적 문서 (resource) - index.jsp ,fail.jsp, success.jsp .... 등
+ -> mvc web 프로젝트에 옮기기
+
+이전 프로젝트에서는 모든 url에 대해서 (어떤 url로 요청이 들어오던간에) tomcat 기본제공하는 default servlet에서 처리해주었고
+그것은 WEB-INF > web.xml에서 servlet태그를 default로 해두었었고
+(정적 소스 처리)
+예)
+  <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.html</url-pattern>
+        <url-pattern>*.htm</url-pattern>
+        <url-pattern>*.js</url-pattern>
+        <url-pattern>*.css</url-pattern>
+        <url-pattern>*.jpg</url-pattern>
+        <url-pattern>*.png</url-pattern>
+        <url-pattern>*.gif</url-pattern>
+  </servlet-mapping>
+
+    
+  <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
+        <url-pattern>*.jspx</url-pattern>
+  </servlet-mapping>
+
+
+dispatcher servlet에 @WebServlet("/") Annotation을 추가했었다
+
+이번 프로젝트에도 이것을 적용하기 위해
+1. 우선 mvc servlet에 "*.do" 	url-pattern을 "/"로 변경한다
+2. 위에 servlet-mapping 2개를 web.xml에 추가한다
+
+
+▣ Spring에서 정적 소스 처리하기
+1. WebContent 내부에 아무 폴더를 만든다 (강사님은 정적 소스를 의미하는 resources로 설정)
+2. 필요한 소스 이동하기(html은 html로, jsp는 jsp로 image는 images로 하위 폴더를 추가한다)
+3. mvc-servlet.xml에 요청에 따른 경로를 변경할 수 있는 <mvc:resources> 태그 추가
+ -> 왜 이런짓을? : 보안을 위해
+
+  <mvc:resources location="/resources/html/" mapping="/jq/**"/>
+
+ - 기존 요청 url과 경로
+    요청 : /mvc/jq/login.html			// 이전 프로젝트들에서 설정된 login.html를 불러오는 경로
+    경로 : /mvc/resources/html/login.html	// tomcat 서버에 들어간 파일의 위치
+

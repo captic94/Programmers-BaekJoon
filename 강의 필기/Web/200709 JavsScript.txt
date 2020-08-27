@@ -1,0 +1,25 @@
+CSS정리
+selector
+background
+font font-family font-style font-size 단위 : px,em(1em is equal to the current font size. The default
+text size in browsers is 16px. So, the default size of 1em is 16px.), %
+list list-style-type
+table border-collapse
+box margin padding box-sizing
+element level block요소[줄바꿈, 크기지정가능], inline요소[줄바꿈안됨, 크기지정안됨, 상하마진없음] display: block, inline, inline-block, none
+position float: left, right clear: both position: absolute, relative, fixed
+수평 중앙 정렬방법 블럭요소 : 상하마진을 auto로 설정 인라인요소: 부모요소의 text-align을 center로 설정
+수직 중앙 정렬방법 블럭요소 : 상하padding값을 동일하게 지정 인라인요소 : 부모요소의 height값과 line-height값을 동일하게 설정 인라인요소의 vertical-align을 middle로 설정
+
+
+
+스크립트 언어는 홀로 실행될 수 없다 -> 기생충 같은거네
+
+Document Object Model(DOM)
+문서의 트리구조 객체화
+element node
+name = html
+
+element node	element node	attribute node	element node
+name = head	name = meta	name = charset	name = title
+				value = UTF-8
