@@ -1,0 +1,111 @@
+요청과 응답의 구조를 규격화 하기 위해서 front controller(Dispatcher servlet)이 있는 것이다
+
+Controller와 View 사이에서 자료를 주고 받고 할 수 있게 해주는 것이 ModelAndView(더 정확히는 Model)
+
+View Resolver의 도움을 받기 위해 mvc-servlet.xml에 bean 추가
+예)
+<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<property name="suffix" value=".jsp"/>
+</bean>
+
+
+
+
+용어 정리
+- Bean Factory = Spring Context = Spring Container = Spring Engine ≒ ApplicationContext
+								(ClassPathXmlApplicationContext)
+								(AnnotationConfigApplicationContext)
+ 예) Spring Container를 구동한다
+- ClassPathXmlApplicationContext, AnnotationConfigApplicationContext로 Spring Container를 구동하는 것은
+  순수 Spring Container 구동하는 것이다
+
+- Web에서 Spring Containter를 구동하는 것은 Web Spring Container (= Web Application Context)이다
+
+
+▣ Web Spring Container 설정하는 법
+1. 설정파일명 기본 작성규칙 :  "<servlet-name>-servlet.xml" WEB-INF\아래에 추가 한다
+예)
+- Web.xml에 아래와 같이 추가
+<servlet>
+    <servlet-name>◎◎◎</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+
+- WebContent > WEB_INF > ◎◎◎-servlet.xml 생성
+
+2. 사용자정의 설정파일명 작성방법
+예)
+- web.xml에 1번에서 추가한 <servlet> 내에 아래 와 같이 추가
+
+   <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/servlet-context.xml</param-value>
+    </init-param>
+
+3-1. 공통Spring 설정파일등록
+- 공통 스프링설정파일들을 로드하기위해 리스너(ContextLoaderListener) 설정
+- 공통 스프링 설정파일명은 applicationContext.xml이다.
+<listener>  
+  <listener-class>
+      org.springframework.web.context.ContextLoaderListener
+ </listener-class>
+</listener>
+
+
+3-2. 공통설정파일이 여러 개인 경우
+- 추측) 기존의 applicationContext.xml을 대신 하면서 추가로 공통 설정파일을 추가/관리 할 수 있다
+
+<context-param>
+  <param-name>contextConfigLocation</param-name>
+  <param-value>/WEB-INF/root-context.xml
+  /WEB-INF/dao-data.xml
+  </param-value>
+</context-param>
+
+
+
+▣ View Resolver의 종류
+1. InternalResourceViewResolver
+ - JSP나 HTML등의 내부자원을 이용해 뷰 생성
+ - InternalResourceView를 기본 뷰로 사용
+
+2. BeanNameViewResolver
+ - 뷰의 이름과 동일한 이름을 가지는 빈을 View로 사용
+ - 사용자정의View객체를 사용하는 경우 주로 사용
+
+3. XmlViewResolver
+ - BeanNameViewResolver와 동일하나 뷰객체를 Xml 파일에 설정해놓는 것이 차이.
+ - Bean 등록시 location 프러퍼티에 xml 파일을 지정 
+
+
+▣ View Resolver를 위한 prefix, suffix 설정하기
+예)
+<bean id="viewResolver"
+	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+	<property name="prefix" value="/WEB-INF/jsp"/>
+	<property name="suffix" value=".jsp"/>
+</bean>
+
+위와 같이 configuration파일(현 프로젝트에선 servlet-context.xml)에 bean을 추가해놓으면
+Controller쪽에서 ModelAndView(또는 그냥 View?)에서 setViewName("경로")에 들어올 경로를 위한
+priffix 접두어? - suffix 접미어를 추가할 수 있다
+-> 위와 같이 설정해두었다면 /WEB-INF/jsp/ + "경로" + .jsp 와 같은 결과의 view(지금같으면 jsp파일)를 찾아간다 
+
+
+※ welcom-file-list태그에 welcome-file태그로 /WEB-INF/jsp/index.jsp를 설정해두면
+- localhost/mvc/ 로 접근하면 index.jsp로 간다
+
+▣ Spring legacy Project (STS?)
+- Java Resources는 동일
+- Java Resources와는 다른 src라는 폴더가 하나 더 존재
+ -> Java Resources과 일치(JR에서 class생성시 여기에도 추가된다) + webapp (WebContent와 유사)
+
+- webapp = resources(정적파일, html이나 img 등) + WEB-INF
+- WEB-INF =  classes(JR에서 class 생성하고 컴파일 시 .class파일 여기에도 생성)
+	  + spring (appServlet + root-context.xml)		-> appServlet = servlet-context.xml과 같은 Web 설정파일
+	  + views (jsp파일들)
+	  + web.xml
+
+▣ Spring으로 tomcat 안통하고 테스트 하기 - mockMvc
