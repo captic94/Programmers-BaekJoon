@@ -1,0 +1,56 @@
+교재 중 하지 않는 부분 : 페이징 처리를 mybatis Mapping으로 하는데 XML 대신 interface로
+
+▣ REST 방식
+- 정의 : Representational State Transfer
+          하나의 URI는 하나의 고유한 Resource를 대표하도록 설계된다는 개념 + 전송방식
+	예) /boards/123 이 게시물 중에 123번이라는 고유한 의미를 갖도록 설계하고
+	    이를 get/post/put/delete 의 방식을 추가적으로 결정
+- 사용 목적 : html이 아니라 순수한 자료형태로 서버에
+
+예)
+<게시판>					<REST>			Method
+/mvc/board/list?currentPage=1		/mvc/board/list/1		Get
+/mvc/board/detail?board_no=17		/mvc/board/detail/17	Get
+/mvc/board/write				/mvc/board/write		Post
+
+
+※ GetMapping의 프로퍼티 'produces'
+-> 응답형식 지정
+ 예) GetMapping(value = "/getText", produces = "text/plain; charset=UTF-8")
+
+
+- REST 방식과 관련된 어노테이션
+ 1. @RestController : 
+ 2. @ResponseBody : jsp와 같은 뷰로 전달되는 게 아니라 데이터 자체를 전달하기 위한 용도
+ 3. @PathVariable :
+ 4. @CrossOrigin : 원래 다른 domain(주소창에 치는거)을 ajax 요청할 수 없는데, 이거 쓰면 가능해진다?
+ 5. @RequestBody : JSON 데이터를 원하는 타입으로 바인딩 처리
+
+
+- 3. @PathVariable 예시
+	// http://localhost/mvc/s.do?num=1	(X)
+	// http://localhost/mvc/s.do/1 	(O)
+//	@GetMapping(value = "/s.do/{num}", produces =  {"text/plain;charset=UTF-8"})
+	@GetMapping(value = {"/s.do", "/s.do/{num}"}, produces =  {"text/plain;charset=UTF-8"})
+	// url 배열( {   } ) 형태로 여러개의 url로 하나의 메서드 접근하게 할 수도 있다?
+	public String s(@PathVariable(value = "num") int no){
+		return "번호 : " + no;
+	}
+
+
+ -> 만약 PathVariable 값이 전달되지 않을 경우
+public String s (@PathVariable(value = "num", required = false) Integer no) {	// required = false로 값 없어도 에러X
+	if (no != null)
+		return "번호 : " + no;
+	else
+		return "번호 " " + 1;
+}
+
+※ Optional - null값 체크?
+ - Optional 사용해서 PathVariable 값이 전달되지 않을 경우 처리하기
+public String s3 (@PathVariable(value = "num", required = false) Optional<Integer> no) {
+	if (no.isPresent())
+		return "번호 : " + no.get();
+	else
+		return "번호 " + 1;
+}

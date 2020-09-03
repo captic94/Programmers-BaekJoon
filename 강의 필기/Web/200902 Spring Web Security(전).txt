@@ -1,0 +1,58 @@
+일반 사용자와 관리자의 로그인시 변경되는 URL에 차이를 두게 할 수 있다
+- 권한이나 등급에 기반을 두는 로그인 체크 : spring에서는 interceptor를 사용하여 처리할 수 있다
+
+interceptor : 서버에서 ' filter '와 동일한 기능이지만, spring-container 내부에서 filter 처럼 사용된다
+ -> interceptor 사용하려면 filter를 사용해야 한다?
+
+▣ 로그인과 로그아웃
+기본 설정
+ - web.xml에 filter와 listener가 있어야 한다?
+ - pom.xml에 spring-security 관련한 4가지 라이브러리를 추가해야 한다
+   1. spring-security-web
+   2. spring-security-config
+   3. spring-security-core
+   4. spring-security-taglibs  // spring용 jsp에서 쓰이는 태그 라이브러리
+  - web.xml에 <context-param> 태그로 security용 configuration파일(이하 security-context.xml)이 추가되고,
+    그 경로에도 파일이 존재해야 한다
+
+1. security-context에 <security: http> 태그와 <security:authentication-manager> 태그를 설정한다
+2. <security: http> 태그 내부에 모든 접근이 가능한 url과 특정 조건이 충족되어야 들어올수 있는 url에 대한 태그를 설정한다
+  예) <security: intercept-url pattern="/sample/all" access="permitAll" />
+          -> ~/sample/all로 접근하는 경우 : 제한 없이 접근 가능 (permitAll - 모두허용)
+       <security: intercept-url pattern="/sample/member" access="hasRole('ROLE_MEMBER')" />
+          -> ~/sample/member로 접근하는 경우 : ROLE_MEMBER라는 권한이 있는 사용자만 접근 가능
+
+※ access의 속성값으로 표현식과 권한명을 의미하는 문자열을 이용한다
+   - <security:http> 태그 기본 설정 =  표현식
+
+3. ROLE_MEMBER 권한이 없는 사람이 /sample/member로 접근하는 경우 강제 이동 시킬 페이지를
+   <security:form-login /> 태그를 이용해 추가한다
+     -> 권한 없으면 로그인 페이지로 이동
+
+4. 특정 아이디로 로그인 성공시 권한을 주기 위해서는 <security: authentication-manager> 태그에
+   <security: authentication-provider> 태그, 그 하위 태그인 <security:user-service>태그를 추가해야하고
+   <security:user-service> 태그 하휘에 <security:user> 태그로 아이디, 비밀번호, 권한명을 설정해야 한다
+
+예)
+<security:authentication-manager>
+	<security:authentication-provider>
+		<security:user-service>
+			<security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
+			<security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER, ROLE_ADMIN"/>
+		</security:user-service>
+	</security:authentication-provider>
+</security:authentication-manager>
+
+※ {noop} ? : 이거 안쓰려면 PasswordEncoder를 다운받야야한다? (라이브러리인가?)
+ -> 그 대신 {noop}을 쓰면 없어도 실행 가능
+
+※ 왜 manager - provider - user-service까지 해야 하는거지?
+ -> Spring-Security에서 인증을 담당하는(그래서 가장 중요한) Authentication'Manager'라는 클래스?(책에는 존재라고 나오네;)
+   그 친구는 ProviderManager로부터 인증할 데이터를 받는다? (책 그림으로 그렇게 보인다)
+   Provider는 Authentication'Provider'라는 객체에게 인증에 대한 처리를 위임한다
+  ∴ 실제 인증 작업을 하는 애는 Authentication'Provider'
+
+ - 이 AP에서 인증된 정보에는 그 권한에 대한 정보도 같이 있는데,
+ 그 권한에 대한 정보를 'User'Details'Service'라는 인터페이스의 구현체에서 처리한다
+ 	∴ Authentication'Manager'  	   -	Authentication'Provider' 	  -   'User'Details'Service'
+  =>  <security:authentication-manager> - <security:authentication-provider> - <security:user-service>
