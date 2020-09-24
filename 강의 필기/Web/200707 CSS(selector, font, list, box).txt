@@ -1,4 +1,4 @@
-tomcat서버를 통해 베포된 프로젝트를 웹어플리케이션 = 웹모듈 = 웹컨텍스트라 부른다
+tomcat서버를 통해 베포된 프로젝트를 WebApplication웹어플리케이션 = WebModule웹모듈 = WebContext웹컨텍스트라 부른다
   예) 우리가 만든 front 프로젝트
 
 
